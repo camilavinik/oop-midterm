@@ -3,6 +3,7 @@
 #include <vector>
 #include "OrderBookEntry.h"
 #include "CSVReader.h"
+#include "Candlestick.h"
 
 MerkelMain::MerkelMain()
 {
@@ -39,6 +40,8 @@ void MerkelMain::printMenu()
     std::cout << "5: Print wallet " << std::endl;
     // 6 continue   
     std::cout << "6: Continue " << std::endl;
+    // 7 continue   
+    std::cout << "7: Print Candlesticks " << std::endl;
 
     std::cout << "============== " << std::endl;
 
@@ -199,6 +202,66 @@ int MerkelMain::getUserOption()
     return userOption;
 }
 
+void MerkelMain::printCandlesticks()
+{
+    std::cout << "printCandlesticks" << std::endl;
+    double period = 180; // 180 nextTime = 15 minutes
+
+    std::vector<Candlestick> candlesticks;
+
+    std::string earliestTime = orderBook.getEarliestTime();
+    std::string currentTime = orderBook.getEarliestTime();
+    double open = 0;
+
+    bool isFirst = true;
+
+    while (isFirst || currentTime != earliestTime) {
+        isFirst = false;
+        std::vector<OrderBookEntry> orders = orderBook.getOrders(OrderBookType::bid, "ETH/BTC", currentTime);
+        currentTime = orderBook.getNextTime(currentTime);
+        double nextTimeCounter = 0;
+
+        while (nextTimeCounter <= period && currentTime != earliestTime) {
+            std::vector<OrderBookEntry> newOrders = orderBook.getOrders(OrderBookType::bid, "ETH/BTC", currentTime);
+
+            for (OrderBookEntry& order : newOrders) {
+                orders.push_back(order);
+            }
+
+            currentTime = orderBook.getNextTime(currentTime);
+            nextTimeCounter += 1;
+        }
+
+        std::cout << "Found " << orders.size() << " orders" << std::endl;
+        std::cout << "interval: " << orders[0].timestamp << " - " << orders[orders.size() - 1].timestamp << std::endl;
+
+        std::cout << "Getting candelstick" << std::endl;
+        Candlestick candlestick = Candlestick::processCandlestick(orders, open);
+        open = candlestick.close;
+        candlesticks.push_back(candlestick);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    std::cout << "Processed " << candlesticks.size() << std::endl;
+    std::cout << "Printing candlesticks: ETH/BTC ask"<< std::endl;
+    std::cout << "Date, Open, Close, High, Low" << std::endl;
+    
+    for (Candlestick candlestick : candlesticks)
+    {
+        std::cout << candlestick.date << ", " << candlestick.open << ", " << candlestick.close << ", " << candlestick.high << ", " << candlestick.low << std::endl;
+    }
+}
+
 void MerkelMain::processUserOption(int userOption)
 {
     if (userOption == 0) // bad input
@@ -228,5 +291,9 @@ void MerkelMain::processUserOption(int userOption)
     if (userOption == 6) 
     {
         gotoNextTimeframe();
+    }
+    if (userOption == 7) 
+    {
+        printCandlesticks();
     }       
 }

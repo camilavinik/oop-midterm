@@ -22,6 +22,7 @@ class MerkelMain
         void gotoNextTimeframe();
         int getUserOption();
         void processUserOption(int userOption);
+        void printCandlesticks();
 
         std::string currentTime;
 
