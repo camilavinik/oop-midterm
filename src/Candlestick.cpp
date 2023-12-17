@@ -16,14 +16,14 @@ Candlestick::Candlestick( std::string _date,
 
 Candlestick Candlestick::processCandlestick(std::vector<OrderBookEntry>& entries, double open)
 {
-    double high = entries[0].price;
+    double high = entries[0].price; //es solo esto??
     double low = entries[0].price;
     double totalAmount = 0;
     double totalValue = 0;
 
     for (OrderBookEntry const& entry : entries) {
         totalAmount += entry.amount;
-        totalValue += entry.price;
+        totalValue += entry.price * entry.amount;
 
         if (entry.price > high) {
             high = entry.price;
