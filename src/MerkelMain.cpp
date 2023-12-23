@@ -248,7 +248,7 @@ void MerkelMain::printCandlesticks()
     //     std::cout << candlestick.date << ", " << candlestick.open << ", " << candlestick.close << ", " << candlestick.high << ", " << candlestick.low << std::endl;
     // }
 
-    candlesticks.plotCandlesticks();
+    candlesticks.plot();
 }
 
 void MerkelMain::processUserOption(int userOption)

@@ -11,13 +11,14 @@ CandlestickGraph::CandlestickGraph(OrderBook orderBook, OrderBookType _type, std
     type = _type;
     product = _product;
     period = _period;
-    candlesticks = processCandlestickGraph(orderBook);
+    candlesticks = getCandlesticks(orderBook);
 }
 
-std::vector<Candlestick> CandlestickGraph::processCandlestickGraph(OrderBook orderBook) 
+std::vector<Candlestick> CandlestickGraph::getCandlesticks(OrderBook orderBook) 
 {
     std::cout << "processCandlestickGraph " << product << " " << period << std::endl;
-    std::cout << "Loading ";
+    std::cout << "Loading";
+    int loadingCounter = 0;
     std::vector<Candlestick> candlesticks;
 
     std::string earliestTime = orderBook.getEarliestTime();
@@ -33,8 +34,7 @@ std::vector<Candlestick> CandlestickGraph::processCandlestickGraph(OrderBook ord
         int nextTimeCounter = 0;
 
         while (nextTimeCounter <= period && currentTime != earliestTime) {
-            std::cout << "\u00B7";
-            std::cout.flush();
+            CandlestickGraph::loadingAnimation(loadingCounter);
             std::vector<OrderBookEntry> newOrders = orderBook.getOrders(type, product, currentTime);
 
             orders.insert(orders.end(), newOrders.begin(), newOrders.end());
@@ -46,41 +46,41 @@ std::vector<Candlestick> CandlestickGraph::processCandlestickGraph(OrderBook ord
         Candlestick candlestick = Candlestick::processCandlestick(orders, open);
         open = candlestick.close;
         candlesticks.push_back(candlestick);
-        std::cout << "\u00B7";
-        std::cout.flush();
+        
+        CandlestickGraph::loadingAnimation(loadingCounter);
     }
-    std::cout << std::endl;
+    std::cout << "\r" << "          " << std::endl;
 
     return candlesticks;
 }
 
-void CandlestickGraph::plotCandlesticks() 
+void CandlestickGraph::plot() 
 {
     int graphWidth = candlesticks.size() * 11 + 12;
 
     for (int i = 0; i < graphWidth; i++) {
-        std::cout << "-";
+        std::cout << "═";
     }
     std::cout << std::endl;
     std::string typeString = (type == OrderBookType::ask) ? "ask" : "bid";
     std::cout << typeString << " | " << product << " | " << period * 5 / 60 << " minutes" << std::endl;
     for (int i = 0; i < graphWidth; i++) {
-        std::cout << "-";
+        std::cout << "═";
     }
     std::cout << std::endl;
 
     std::vector<double> orderedValues = getOrderedValues();
     for (double Xvalue : orderedValues) {
-        std::cout << std::setw(10) << Xvalue << " |";
+        std::cout << std::setw(10) << Xvalue << " │";
 
         for (Candlestick candlestick : candlesticks) {
             std::string color = (candlestick.open > candlestick.close) ? RED : GREEN;
             
             std::cout << color;
             if ((candlestick.open >= Xvalue && candlestick.close <= Xvalue) || (candlestick.open <= Xvalue && candlestick.close >= Xvalue)) {
-                std::cout << " ========= ";
+                std::cout << " █████████ ";
             } else if (candlestick.high >= Xvalue && candlestick.low <= Xvalue) {
-                std::cout << "     |     ";
+                std::cout << "     │     ";
             } else {
                 std::cout << "           ";
             }
@@ -91,7 +91,7 @@ void CandlestickGraph::plotCandlesticks()
     }
 
     for (int i = 0; i < graphWidth; i++) {
-        std::cout << "-";
+        std::cout << "─";
     }
     std::cout << std::endl;
 
@@ -130,4 +130,22 @@ std::vector<std::string> CandlestickGraph::getTimeframes()
     }
 
     return timeframes;
+}
+
+void CandlestickGraph::loadingAnimation(int &loadingCounter) {
+    std::cout << "\r";
+    if (loadingCounter == 0) {
+        std::cout << "Loading   ";
+        loadingCounter += 1;
+    } else if (loadingCounter == 1) {
+        std::cout << "Loading.  ";
+        loadingCounter += 1;
+    } else if (loadingCounter == 2) {
+        std::cout << "Loading.. ";
+        loadingCounter += 1;
+    } else {
+        std::cout << "Loading...";
+        loadingCounter = 0;
+    }
+    std::cout.flush();
 }
