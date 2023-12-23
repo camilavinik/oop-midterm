@@ -210,12 +210,14 @@ void MerkelMain::printCandlesticks()
     
     std::cout << "Processed " << candlesticks.candlesticks.size() << std::endl;
     std::cout << "Printing candlesticks: BTC/USDT ask"<< std::endl;
-    std::cout << "Date,      Open,      Close,      High,      Low" << std::endl;
+    std::cout << "Date,                       Open,    Close,   High,  Low" << std::endl;
     
     for (Candlestick candlestick : candlesticks.candlesticks)
     {
         std::cout << candlestick.date << ", " << candlestick.open << ", " << candlestick.close << ", " << candlestick.high << ", " << candlestick.low << std::endl;
     }
+
+    candlesticks.plotCandlesticks();
 }
 
 void MerkelMain::processUserOption(int userOption)

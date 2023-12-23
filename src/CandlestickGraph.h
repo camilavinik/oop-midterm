@@ -8,9 +8,10 @@ class CandlestickGraph
     public:
         std::vector<Candlestick> candlesticks;
         CandlestickGraph(OrderBook orderBook);
+        void plotCandlesticks();
 
     private:
         std::vector<Candlestick> processCandlestickGraph(OrderBook orderBook);
-        double getHighValue();
-        double getLowValue();
+        std::vector<double> getOrderedValues();
+        std::vector<std::string> getTimeframes();
 };
