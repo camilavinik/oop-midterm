@@ -6,16 +6,19 @@
 #define RED     "\033[31m"
 #define GREEN   "\033[32m"
 
-CandlestickGraph::CandlestickGraph(OrderBook orderBook) 
+CandlestickGraph::CandlestickGraph(OrderBook orderBook, OrderBookType _type, std::string _product, int _period) 
 {
+    type = _type;
+    product = _product;
+    period = _period;
     candlesticks = processCandlestickGraph(orderBook);
 }
 
 std::vector<Candlestick> CandlestickGraph::processCandlestickGraph(OrderBook orderBook) 
 {
+    std::cout << "processCandlestickGraph " << product << " " << period << std::endl;
     std::cout << "Loading ";
     std::vector<Candlestick> candlesticks;
-    int period = 180; // 180 nextTime = 15 minutes
 
     std::string earliestTime = orderBook.getEarliestTime();
     std::string currentTime = orderBook.getEarliestTime();
@@ -25,14 +28,14 @@ std::vector<Candlestick> CandlestickGraph::processCandlestickGraph(OrderBook ord
 
     while (isFirst || currentTime != earliestTime) {
         isFirst = false;
-        std::vector<OrderBookEntry> orders = orderBook.getOrders(OrderBookType::ask, "BTC/USDT", currentTime);
+        std::vector<OrderBookEntry> orders = orderBook.getOrders(type, product, currentTime);
         currentTime = orderBook.getNextTime(currentTime);
         int nextTimeCounter = 0;
 
         while (nextTimeCounter <= period && currentTime != earliestTime) {
             std::cout << "\u00B7";
             std::cout.flush();
-            std::vector<OrderBookEntry> newOrders = orderBook.getOrders(OrderBookType::ask, "BTC/USDT", currentTime);
+            std::vector<OrderBookEntry> newOrders = orderBook.getOrders(type, product, currentTime);
 
             orders.insert(orders.end(), newOrders.begin(), newOrders.end());
 
@@ -53,7 +56,18 @@ std::vector<Candlestick> CandlestickGraph::processCandlestickGraph(OrderBook ord
 
 void CandlestickGraph::plotCandlesticks() 
 {
-    std::cout << "plotCandlesticks" << std::endl;
+    int graphWidth = candlesticks.size() * 11 + 12;
+
+    for (int i = 0; i < graphWidth; i++) {
+        std::cout << "-";
+    }
+    std::cout << std::endl;
+    std::string typeString = (type == OrderBookType::ask) ? "ask" : "bid";
+    std::cout << typeString << " | " << product << " | " << period * 5 / 60 << " minutes" << std::endl;
+    for (int i = 0; i < graphWidth; i++) {
+        std::cout << "-";
+    }
+    std::cout << std::endl;
 
     std::vector<double> orderedValues = getOrderedValues();
     for (double Xvalue : orderedValues) {
@@ -76,7 +90,7 @@ void CandlestickGraph::plotCandlesticks()
 
     }
 
-    for (int i = 0; i < candlesticks.size()*11 + 12; i++) {
+    for (int i = 0; i < graphWidth; i++) {
         std::cout << "-";
     }
     std::cout << std::endl;

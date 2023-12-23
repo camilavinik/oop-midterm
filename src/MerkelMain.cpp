@@ -205,17 +205,48 @@ int MerkelMain::getUserOption()
 
 void MerkelMain::printCandlesticks()
 {
-    std::cout << "printCandlesticks" << std::endl;
-    CandlestickGraph candlesticks{orderBook};
-    
-    std::cout << "Processed " << candlesticks.candlesticks.size() << std::endl;
-    std::cout << "Printing candlesticks: BTC/USDT ask"<< std::endl;
-    std::cout << "Date,                       Open,    Close,   High,  Low" << std::endl;
-    
-    for (Candlestick candlestick : candlesticks.candlesticks)
-    {
-        std::cout << candlestick.date << ", " << candlestick.open << ", " << candlestick.close << ", " << candlestick.high << ", " << candlestick.low << std::endl;
+    OrderBookType type;
+    std::cout << "Enter order type (ask/bid)" << std::endl;
+    std::string typeInput;
+    std::getline(std::cin, typeInput);  
+
+    if (typeInput != "ask" && typeInput != "bid") {
+        std::cout << "Invalid type. Choose ask or bid" << std::endl;
+        return;
+    } else {
+        type = OrderBookEntry::stringToOrderBookType(typeInput);
     }
+
+    std::string product;
+    std::cout << "Enter product (e.i. 'BTC/USDT')" << std::endl;
+    std::string productInput;
+    std::getline(std::cin, productInput);
+    product = productInput;
+
+
+    std::cout << "Do you want a custom time period? Else, default is 15 minutes. (yes/no)" << std::endl;
+    std::string wantPeriod;
+    std::getline(std::cin, wantPeriod);  
+
+    int period = 180;
+    if (wantPeriod == "yes") {
+        std::cout << "Enter time period in minutes" << std::endl;
+        std::string periodInput;
+        std::getline(std::cin, periodInput);
+        period = stoi(periodInput) * 60 / 5;
+    }
+
+
+    CandlestickGraph candlesticks{orderBook, type, product, period};
+    
+    // std::cout << "Processed " << candlesticks.candlesticks.size() << std::endl;
+    // std::cout << "Printing candlesticks: BTC/USDT ask"<< std::endl;
+    // std::cout << "Date,                       Open,    Close,   High,  Low" << std::endl;
+    
+    // for (Candlestick candlestick : candlesticks.candlesticks)
+    // {
+    //     std::cout << candlestick.date << ", " << candlestick.open << ", " << candlestick.close << ", " << candlestick.high << ", " << candlestick.low << std::endl;
+    // }
 
     candlesticks.plotCandlesticks();
 }
