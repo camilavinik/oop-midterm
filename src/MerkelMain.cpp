@@ -236,18 +236,17 @@ void MerkelMain::printCandlesticks()
         period = stoi(periodInput) * 60 / 5;
     }
 
+    std::cout << "Do you want to show the first period candlestick? Open value will be first price registered (yes/no)" << std::endl;
+    std::string showFirstInput;
+    std::getline(std::cin, showFirstInput);
 
-    CandlestickGraph candlesticks{orderBook, type, product, period};
-    
-    // std::cout << "Processed " << candlesticks.candlesticks.size() << std::endl;
-    // std::cout << "Printing candlesticks: BTC/USDT ask"<< std::endl;
-    // std::cout << "Date,                       Open,    Close,   High,  Low" << std::endl;
-    
-    // for (Candlestick candlestick : candlesticks.candlesticks)
-    // {
-    //     std::cout << candlestick.date << ", " << candlestick.open << ", " << candlestick.close << ", " << candlestick.high << ", " << candlestick.low << std::endl;
-    // }
+    bool showFirst = false;
+    if (showFirstInput == "yes") {
+        showFirst = true;
+    }
 
+
+    CandlestickGraph candlesticks{orderBook, type, product, period, showFirst};
     candlesticks.plot();
 }
 

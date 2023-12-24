@@ -41,7 +41,7 @@ std::vector<OrderBookEntry> OrderBook::getOrders(OrderBookType type,
     {
         if (e.orderType == type && 
             e.product == product && 
-            e.timestamp == timestamp )
+            (timestamp == "" || e.timestamp == timestamp))
             {
                 orders_sub.push_back(e);
             }

@@ -14,7 +14,7 @@ class OrderBook
     /** return vector of Orders according to the sent filters*/
         std::vector<OrderBookEntry> getOrders(OrderBookType type, 
                                               std::string product, 
-                                              std::string timestamp);
+                                              std::string timestamp = "");
 
         /** returns the earliest time in the orderbook*/
         std::string getEarliestTime();
