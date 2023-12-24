@@ -205,25 +205,41 @@ int MerkelMain::getUserOption()
 
 void MerkelMain::printCandlesticks()
 {
+    // ask for order type
     OrderBookType type;
     std::cout << "Enter order type (ask/bid)" << std::endl;
     std::string typeInput;
     std::getline(std::cin, typeInput);  
 
     if (typeInput != "ask" && typeInput != "bid") {
-        std::cout << "Invalid type. Choose ask or bid" << std::endl;
+        std::cout << "Invalid type. Choose ask or bid." << std::endl;
         return;
     } else {
         type = OrderBookEntry::stringToOrderBookType(typeInput);
     }
 
+    // ask for product
     std::string product;
-    std::cout << "Enter product (e.i. 'BTC/USDT')" << std::endl;
+    std::vector<std::string> knownProducts = orderBook.getKnownProducts();
+    std::cout << "Choose product." << std::endl;
+    for (int i = 1; i < knownProducts.size() + 1; i++)
+    {
+        std::cout << i << ": " << knownProducts[i - 1] << std::endl;
+    }
+
     std::string productInput;
     std::getline(std::cin, productInput);
-    product = productInput;
+    try {
+        product = knownProducts[stoi(productInput) - 1];
+        if (product == "") {
+            throw std::exception();
+        }
+    } catch (const std::exception& e) {
+        std::cout << "Invalid product." << std::endl;
+        return;
+    }
 
-
+    // ask for time period
     std::cout << "Do you want a custom time period? Else, default is 15 minutes. (yes/no)" << std::endl;
     std::string wantPeriod;
     std::getline(std::cin, wantPeriod);  
@@ -233,9 +249,19 @@ void MerkelMain::printCandlesticks()
         std::cout << "Enter time period in minutes" << std::endl;
         std::string periodInput;
         std::getline(std::cin, periodInput);
-        period = stoi(periodInput) * 60 / 5;
+        try {
+            period = stoi(periodInput) * 60 / 5;
+            if (period < 1) {
+                throw std::exception();
+            }
+        } catch (const std::exception& e) {
+            std::cout << "Invalid input. Defaulting to 15 minutes." << std::endl;
+        }
+    } else if (wantPeriod != "no") {
+        std::cout << "Invalid input. Defaulting to 15 minutes." << std::endl;
     }
 
+    // ask if they want to show the first candlestick
     std::cout << "Do you want to show the first period candlestick? Open value will be first price registered (yes/no)" << std::endl;
     std::string showFirstInput;
     std::getline(std::cin, showFirstInput);
@@ -243,9 +269,11 @@ void MerkelMain::printCandlesticks()
     bool showFirst = false;
     if (showFirstInput == "yes") {
         showFirst = true;
+    } else if (showFirstInput != "no") {
+        std::cout << "Invalid input. Defaulting to no." << std::endl;
     }
 
-
+    // get and plot candlesticks
     CandlestickGraph candlesticks{orderBook, type, product, period, showFirst};
     candlesticks.plot();
 }
