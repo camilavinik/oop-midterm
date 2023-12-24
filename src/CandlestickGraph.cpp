@@ -76,7 +76,7 @@ void CandlestickGraph::plot()
 
     std::vector<double> orderedValues = getOrderedValues();
     for (double Xvalue : orderedValues) {
-        std::cout << std::setw(10) << Xvalue << " │";
+        std::cout << std::setw(12) << Xvalue << " │";
 
         for (Candlestick candlestick : candlesticks) {
             std::string color = (candlestick.open > candlestick.close) ? RED : GREEN;
@@ -102,7 +102,7 @@ void CandlestickGraph::plot()
 
 
     std::vector<std::string> timeframes = getTimeframes();
-    std::cout <<  "           | ";
+    std::cout <<  "             | ";
     for (std::string timeframe : timeframes) {
         std::cout << timeframe << "   ";
     }
