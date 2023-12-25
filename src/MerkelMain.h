@@ -23,6 +23,7 @@ class MerkelMain
         int getUserOption();
         void processUserOption(int userOption);
         void printCandlesticks();
+        void printVolumeGraph();
 
         std::string currentTime;
 

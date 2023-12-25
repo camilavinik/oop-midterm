@@ -61,21 +61,23 @@ std::vector<Candlestick> CandlestickGraph::getCandlesticks(OrderBook orderBook, 
 
 void CandlestickGraph::plot() 
 {
-    int graphWidth = candlesticks.size() * 11 + 12;
+    int graphWidth = candlesticks.size() * 11 + 14;
 
     for (int i = 0; i < graphWidth; i++) {
         std::cout << "═";
     }
     std::cout << std::endl;
+
     std::string typeString = (type == OrderBookType::ask) ? "ask" : "bid";
     std::cout << typeString << " | " << product << " | " << period * 5 / 60 << " minutes" << std::endl;
+    
     for (int i = 0; i < graphWidth; i++) {
         std::cout << "═";
     }
     std::cout << std::endl;
 
     std::vector<double> orderedValues = getOrderedValues();
-    for (double Xvalue : orderedValues) {
+    for (double Xvalue : orderedValues) { //its Y value, change it
         std::cout << std::setw(12) << Xvalue << " │";
 
         for (Candlestick candlestick : candlesticks) {
@@ -130,8 +132,8 @@ std::vector<std::string> CandlestickGraph::getTimeframes()
     std::vector<std::string> timeframes;
 
     for (Candlestick const& candlestick : candlesticks) {
-        std::string date = candlestick.date.substr(11, 8);
-        timeframes.push_back(date);
+        std::string time = candlestick.date.substr(11, 8);
+        timeframes.push_back(time);
     }
 
     return timeframes;
