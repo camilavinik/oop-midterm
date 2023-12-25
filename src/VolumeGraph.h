@@ -15,5 +15,6 @@ class VolumeGraph {
         std::vector<VolumeEntry> volumes;
         std::vector<VolumeEntry> getVolumes(OrderBook orderBook);
         std::vector<double> getOrderedValues();
-        std::vector<std::string> getTimeframes();
+        std::vector<std::string> getStartTimes();
+        std::vector<std::string> getEndTimes();
 };

@@ -3,8 +3,9 @@
 
 class VolumeEntry {
     public:
-        std::string timestamp;
+        std::string startTime;
+        std::string endTime;
         double ask;
         double bid;
-        VolumeEntry(std::string _timestamp, double ask, double bid);
+        VolumeEntry(std::string startTime, std::string endTime, double ask, double bid);
 };

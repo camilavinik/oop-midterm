@@ -19,6 +19,7 @@ std::vector<VolumeEntry> VolumeGraph::getVolumes(OrderBook orderBook) {
     int nextTimeCounter = 0;
     std::string currentTime = orderBook.getEarliestTime(); // deberia cambiarlo al de orders[0]?
 
+    std::string startTime = currentTime;
     double asksVolume = 0;
     double bidsVolume = 0;
     for (OrderBookEntry &order : orders) {
@@ -40,7 +41,7 @@ std::vector<VolumeEntry> VolumeGraph::getVolumes(OrderBook orderBook) {
             currentTime = order.timestamp;
             nextTimeCounter += 1;
         } else {
-            VolumeEntry volumeEntry = VolumeEntry(currentTime, asksVolume, bidsVolume);
+            VolumeEntry volumeEntry = VolumeEntry(startTime, currentTime, asksVolume, bidsVolume);
             volumes.push_back(volumeEntry);
 
             asksVolume = 0;
@@ -53,9 +54,14 @@ std::vector<VolumeEntry> VolumeGraph::getVolumes(OrderBook orderBook) {
             }
 
             currentTime = order.timestamp;
+            startTime = order.timestamp;
             nextTimeCounter = 0;
         }
+    }
 
+    if (asksVolume > 0 || bidsVolume > 0) {
+        VolumeEntry volumeEntry = VolumeEntry(startTime, currentTime, asksVolume, bidsVolume);
+        volumes.push_back(volumeEntry);
     }
 
     return volumes;
@@ -101,9 +107,16 @@ void VolumeGraph::plot() {
     }
     std::cout << std::endl;
 
-    std::vector<std::string> timeframes = getTimeframes();
-    std::cout <<  "             | ";
-    for (std::string timeframe : timeframes) {
+    std::vector<std::string> startTimes = getStartTimes();
+    std::cout <<  "             │ ";
+    for (std::string timeframe : startTimes) {
+        std::cout << timeframe << "   ";
+    }
+    std::cout << std::endl;
+
+    std::vector<std::string> endTimes = getEndTimes();
+    std::cout <<  "             │ ";
+    for (std::string timeframe : endTimes) {
         std::cout << timeframe << "   ";
     }
     std::cout << std::endl;
@@ -121,13 +134,24 @@ std::vector<double> VolumeGraph::getOrderedValues() {
     return values;
 }
 
-std::vector<std::string> VolumeGraph::getTimeframes() {
-    std::vector<std::string> timeframes;
+std::vector<std::string> VolumeGraph::getStartTimes() {
+    std::vector<std::string> timestamps;
 
     for (VolumeEntry &volume : volumes) {
-        std::string time = volume.timestamp.substr(11, 8);
-        timeframes.push_back(time);
+        std::string time = volume.startTime.substr(11, 8);
+        timestamps.push_back(time);
     }
 
-    return timeframes;
+    return timestamps;
+}
+
+std::vector<std::string> VolumeGraph::getEndTimes() {
+    std::vector<std::string> timestamps;
+
+    for (VolumeEntry &volume : volumes) {
+        std::string time = volume.endTime.substr(11, 8);
+        timestamps.push_back(time);
+    }
+
+    return timestamps;
 }
