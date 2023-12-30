@@ -12,5 +12,5 @@ class Candlestick
         double low;
         double close;
 
-        Candlestick(std::vector<OrderBookEntry>& entries, double& open);   
+        Candlestick(std::vector<OrderBookEntry> &entries, double &open);   
 };

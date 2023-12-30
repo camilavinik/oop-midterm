@@ -8,7 +8,7 @@
 #define RED     "\033[31m"
 #define GREEN   "\033[32m"
 
-CandlestickGraph::CandlestickGraph(OrderBook orderBook, OrderBookType _type, std::string _product, int _period, bool showFirst) // CandlestickGraph constructor
+CandlestickGraph::CandlestickGraph(OrderBook &orderBook, OrderBookType &_type, std::string &_product, int &_period, bool &showFirst) // CandlestickGraph constructor
 {
     type = _type;
     product = _product;
@@ -16,7 +16,7 @@ CandlestickGraph::CandlestickGraph(OrderBook orderBook, OrderBookType _type, std
     candlesticks = getCandlesticks(orderBook, showFirst);
 }
 
-std::vector<Candlestick> CandlestickGraph::getCandlesticks(OrderBook orderBook, bool showFirst) 
+std::vector<Candlestick> CandlestickGraph::getCandlesticks(OrderBook &orderBook, bool &showFirst) 
 {
     std::vector<Candlestick> candlesticks;
 
@@ -36,7 +36,7 @@ std::vector<Candlestick> CandlestickGraph::getCandlesticks(OrderBook orderBook, 
     std::vector<OrderBookEntry> currentPeriodOrders;
 
     // iterate through orders
-    for (OrderBookEntry &order : orders) {
+    for (const OrderBookEntry &order : orders) {
         if (order.timestamp == currentTime) { // if order is in current time period, add it to current period orders
             currentPeriodOrders.push_back(order);
         } else if (nextTimeCounter <= period) { // if order is still in current time period, add it to current period orders and increment next time counter
@@ -105,12 +105,12 @@ void CandlestickGraph::plot()
     std::vector<double> orderedValues = getOrderedValues();
 
     // iterate through Y values
-    for (double Yvalue : orderedValues) {
+    for (const double &Yvalue : orderedValues) {
         // print Y value
         std::cout << std::setw(12) << Yvalue << " │";
 
         // iterate through candlesticks to check if they are in the current Y value
-        for (Candlestick candlestick : candlesticks) {
+        for (const Candlestick &candlestick : candlesticks) {
             // set candlestick color
             std::string color = (candlestick.open > candlestick.close) ? RED : GREEN;
             
@@ -138,7 +138,7 @@ void CandlestickGraph::plot()
     // print X axis values with timeframes
     std::vector<std::string> timeframes = getTimeframes();
     std::cout <<  "             | ";
-    for (std::string timeframe : timeframes) {
+    for (const std::string &timeframe : timeframes) {
         std::cout << timeframe << "   ";
     }
     std::cout << std::endl;
@@ -150,7 +150,7 @@ std::vector<double> CandlestickGraph::getOrderedValues()
     std::vector<double> values;
 
     // get every candlestick values
-    for (Candlestick const& candlestick : candlesticks) {
+    for (const Candlestick &candlestick : candlesticks) {
         values.push_back(candlestick.open);
         values.push_back(candlestick.close);
         values.push_back(candlestick.high);
@@ -167,7 +167,7 @@ std::vector<std::string> CandlestickGraph::getTimeframes()
     std::vector<std::string> timeframes;
 
     // get every candlestick timeframe
-    for (Candlestick const& candlestick : candlesticks) {
+    for (const Candlestick &candlestick : candlesticks) {
         std::string time = candlestick.date.substr(11, 8);
         timeframes.push_back(time);
     }

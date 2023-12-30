@@ -6,7 +6,7 @@
 
 class VolumeGraph {
     public:
-        VolumeGraph(OrderBook orderBook, std::string product, int period);
+        VolumeGraph(OrderBook &orderBook, std::string &product, int &period);
         /** Plot Volume Graph on console. */
         void plot();
     
@@ -18,7 +18,7 @@ class VolumeGraph {
         /** Get volume entries out of order book.
          * Returns vector of volume entries.
         */
-        std::vector<VolumeEntry> getVolumes(OrderBook orderBook);
+        std::vector<VolumeEntry> getVolumes(OrderBook &orderBook);
         /** Get volume entries values in descending order. */
         std::vector<double> getOrderedValues();
         /** Get volume entries start times. */

@@ -1,6 +1,6 @@
 #include "Candlestick.h"
 
-Candlestick::Candlestick(std::vector<OrderBookEntry>& entries, double& openValue) // Candlestick constructor
+Candlestick::Candlestick(std::vector<OrderBookEntry> &entries, double &openValue) // Candlestick constructor
 {
     // set initial high and low values and total amount and value
     double highValue = entries[0].price;
@@ -9,7 +9,7 @@ Candlestick::Candlestick(std::vector<OrderBookEntry>& entries, double& openValue
     double totalValue = 0;
 
     // iterate through the entries to find high, low, total amount and total value
-    for (OrderBookEntry const& entry : entries) {
+    for (const OrderBookEntry &entry : entries) {
         totalAmount += entry.amount;
         totalValue += entry.price * entry.amount;
 

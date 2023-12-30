@@ -8,13 +8,13 @@
 #define MAGENTA "\033[35m"
 #define CYAN    "\033[36m"
 
-VolumeGraph::VolumeGraph(OrderBook orderBook, std::string _product, int _period) {
+VolumeGraph::VolumeGraph(OrderBook &orderBook, std::string &_product, int &_period) {
     product = _product;
     period = _period;
     volumes = getVolumes(orderBook);
 }
 
-std::vector<VolumeEntry> VolumeGraph::getVolumes(OrderBook orderBook) {
+std::vector<VolumeEntry> VolumeGraph::getVolumes(OrderBook &orderBook) {
     std::vector<VolumeEntry> volumes;
 
     // get orders with any order type for given product
@@ -34,7 +34,7 @@ std::vector<VolumeEntry> VolumeGraph::getVolumes(OrderBook orderBook) {
     double bidsVolume = 0;
 
     // iterate through orders
-    for (OrderBookEntry &order : orders) {
+    for (const OrderBookEntry &order : orders) {
         // calculate order entry volume
         double volume = order.price * order.amount;
         
@@ -55,7 +55,7 @@ std::vector<VolumeEntry> VolumeGraph::getVolumes(OrderBook orderBook) {
             currentTime = order.timestamp;
             nextTimeCounter += 1;
         } else { // if order is not in current time period, create volume entry with current period volume and add it to volumes vector
-            VolumeEntry volumeEntry = VolumeEntry(startTime, currentTime, asksVolume, bidsVolume);
+            VolumeEntry volumeEntry{startTime, currentTime, asksVolume, bidsVolume};
             volumes.push_back(volumeEntry);
 
             // reset current period volumes values
@@ -78,7 +78,7 @@ std::vector<VolumeEntry> VolumeGraph::getVolumes(OrderBook orderBook) {
 
     // create volume entry with the orders that are left, if there are any
     if (asksVolume > 0 || bidsVolume > 0) {
-        VolumeEntry volumeEntry = VolumeEntry(startTime, currentTime, asksVolume, bidsVolume);
+        VolumeEntry volumeEntry{startTime, currentTime, asksVolume, bidsVolume};
         volumes.push_back(volumeEntry);
     }
 
@@ -104,7 +104,7 @@ void VolumeGraph::plot() {
     }
     std::cout << std::endl;
 
-    std::cout << MAGENTA << "██ ask" << RESET << " | " << CYAN << "██ bid" << RESET << " | " << period * 5 / 60 << " minutes" << std::endl;
+    std::cout << product << " | " << MAGENTA << "██ ask" << RESET << " | " << CYAN << "██ bid" << RESET << " | " << period * 5 / 60 << " minutes" << std::endl;
     
     for (int i = 0; i < graphWidth; i++) {
         std::cout << "═";
@@ -115,12 +115,12 @@ void VolumeGraph::plot() {
     std::vector<double> Yvalues = getOrderedValues();
 
     // iterate through Y values
-    for (double &y : Yvalues) {
+    for (const double &y : Yvalues) {
         // print Y value
         std::cout << std::setw(12) << y << " │";
 
         // iterate through volume entries to check if they are in the current Y value
-        for (VolumeEntry &volume : volumes) {
+        for (const VolumeEntry &volume : volumes) {
             if (y <= volume.ask && y <= volume.bid) { // if both ask and bid values are higher than Y value, print both with their colors
                 std::cout << MAGENTA << "   ██" << CYAN << "██    ";
             } else if (y <= volume.ask && y > volume.bid) { // if only ask value is higher than Y value, print ask with its color
@@ -144,7 +144,7 @@ void VolumeGraph::plot() {
     // print X axis values with start times
     std::vector<std::string> startTimes = getStartTimes();
     std::cout <<  "             │ ";
-    for (std::string timeframe : startTimes) {
+    for (const std::string &timeframe : startTimes) {
         std::cout << timeframe << "   ";
     }
     std::cout << std::endl;
@@ -152,7 +152,7 @@ void VolumeGraph::plot() {
     // print end times right below start times
     std::vector<std::string> endTimes = getEndTimes();
     std::cout <<  "             │ ";
-    for (std::string timeframe : endTimes) {
+    for (const std::string &timeframe : endTimes) {
         std::cout << timeframe << "   ";
     }
     std::cout << std::endl;
@@ -162,7 +162,7 @@ std::vector<double> VolumeGraph::getOrderedValues() {
     std::vector<double> values;
 
     // get all ask and bid values from volume entries
-    for (VolumeEntry &volume : volumes) {
+    for (const VolumeEntry &volume : volumes) {
         values.push_back(volume.ask);
         values.push_back(volume.bid);
     }
@@ -176,7 +176,7 @@ std::vector<std::string> VolumeGraph::getStartTimes() {
     std::vector<std::string> timestamps;
 
     // get every volume entry start time
-    for (VolumeEntry &volume : volumes) {
+    for (const VolumeEntry &volume : volumes) {
         std::string time = volume.startTime.substr(11, 8);
         timestamps.push_back(time);
     }
@@ -188,7 +188,7 @@ std::vector<std::string> VolumeGraph::getEndTimes() {
     std::vector<std::string> timestamps;
 
     // get every volume entry end time
-    for (VolumeEntry &volume : volumes) {
+    for (const VolumeEntry &volume : volumes) {
         std::string time = volume.endTime.substr(11, 8);
         timestamps.push_back(time);
     }
