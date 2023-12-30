@@ -1,4 +1,5 @@
 #include "VolumeGraph.h"
+#include "TerminalWindow.h"
 #include <iostream>
 #include <iomanip>
 
@@ -69,6 +70,14 @@ std::vector<VolumeEntry> VolumeGraph::getVolumes(OrderBook orderBook) {
 
 void VolumeGraph::plot() {
     int graphWidth = volumes.size() * 11 + 14;
+    int consoleWidth = TerminalWindow::getConsoleWidth();
+    
+    if (graphWidth > consoleWidth) {
+        TerminalWindow::error(
+            "Can't display graph in this console, try a wider console with at least " + std::to_string(graphWidth) + ". Current width " + std::to_string(consoleWidth)
+        );
+        return;
+    }
 
     for (int i = 0; i < graphWidth; i++) {
         std::cout << "═";

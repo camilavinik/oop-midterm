@@ -6,6 +6,7 @@
 #include "Candlestick.h"
 #include "CandlestickGraph.h"
 #include "VolumeGraph.h"
+#include "TerminalWindow.h"
 
 MerkelMain::MerkelMain()
 {
@@ -210,12 +211,12 @@ void MerkelMain::printCandlesticks()
 {
     // ask for order type
     OrderBookType type;
-    std::cout << "Enter order type (ask/bid)" << std::endl;
+    TerminalWindow::message("Enter order type (ask/bid)");
     std::string typeInput;
     std::getline(std::cin, typeInput);  
 
     if (typeInput != "ask" && typeInput != "bid") {
-        std::cout << "Invalid type. Choose ask or bid." << std::endl;
+        TerminalWindow::error("Invalid type. Choose ask or bid.");
         return;
     } else {
         type = OrderBookEntry::stringToOrderBookType(typeInput);
@@ -224,10 +225,10 @@ void MerkelMain::printCandlesticks()
     // ask for product
     std::string product;
     std::vector<std::string> knownProducts = orderBook.getKnownProducts();
-    std::cout << "Choose product." << std::endl;
+    TerminalWindow::message("Choose product.");
     for (int i = 1; i < knownProducts.size() + 1; i++)
     {
-        std::cout << i << ": " << knownProducts[i - 1] << std::endl;
+        TerminalWindow::message(std::to_string(i) + ": " + knownProducts[i - 1]);
     }
 
     std::string productInput;
@@ -238,18 +239,18 @@ void MerkelMain::printCandlesticks()
             throw std::exception();
         }
     } catch (const std::exception& e) {
-        std::cout << "Invalid product." << std::endl;
+        TerminalWindow::error("Invalid product.");
         return;
     }
 
     // ask for time period
-    std::cout << "Do you want a custom time period? Else, default is 15 minutes. (yes/no)" << std::endl;
+    TerminalWindow::message("Do you want a custom time period? Else, default is 15 minutes. (yes/no)");
     std::string wantPeriod;
     std::getline(std::cin, wantPeriod);  
 
     int period = 180;
     if (wantPeriod == "yes") {
-        std::cout << "Enter time period in minutes" << std::endl;
+        TerminalWindow::message("Enter time period in minutes");
         std::string periodInput;
         std::getline(std::cin, periodInput);
         try {
@@ -258,14 +259,14 @@ void MerkelMain::printCandlesticks()
                 throw std::exception();
             }
         } catch (const std::exception& e) {
-            std::cout << "Invalid input. Defaulting to 15 minutes." << std::endl;
+            TerminalWindow::error("Invalid input. Defaulting to 15 minutes.");
         }
     } else if (wantPeriod != "no") {
-        std::cout << "Invalid input. Defaulting to 15 minutes." << std::endl;
+        TerminalWindow::error("Invalid input. Defaulting to 15 minutes.");
     }
 
     // ask if they want to show the first candlestick
-    std::cout << "Do you want to show the first period candlestick? Open value will be first price registered (yes/no)" << std::endl;
+    TerminalWindow::message("Do you want to show the first period candlestick? Open value will be first price registered (yes/no)");
     std::string showFirstInput;
     std::getline(std::cin, showFirstInput);
 
@@ -273,7 +274,7 @@ void MerkelMain::printCandlesticks()
     if (showFirstInput == "yes") {
         showFirst = true;
     } else if (showFirstInput != "no") {
-        std::cout << "Invalid input. Defaulting to no." << std::endl;
+        TerminalWindow::error("Invalid input. Defaulting to no.");
     }
 
     // get and plot candlesticks
@@ -285,10 +286,10 @@ void MerkelMain::printVolumeGraph() {
     // ask for product
     std::string product;
     std::vector<std::string> knownProducts = orderBook.getKnownProducts();
-    std::cout << "Choose product." << std::endl;
+    TerminalWindow::message("Choose product.");
     for (int i = 1; i < knownProducts.size() + 1; i++)
     {
-        std::cout << i << ": " << knownProducts[i - 1] << std::endl;
+        TerminalWindow::message(std::to_string(i) + ": " + knownProducts[i - 1]);
     }
 
     std::string productInput;
@@ -299,18 +300,18 @@ void MerkelMain::printVolumeGraph() {
             throw std::exception();
         }
     } catch (const std::exception& e) {
-        std::cout << "Invalid product." << std::endl;
+        TerminalWindow::error("Invalid product.");
         return;
     }
 
     // ask for time period
-    std::cout << "Do you want a custom time period? Else, default is 15 minutes. (yes/no)" << std::endl;
+    TerminalWindow::message("Do you want a custom time period? Else, default is 15 minutes. (yes/no)");
     std::string wantPeriod;
     std::getline(std::cin, wantPeriod);  
 
     int period = 180;
     if (wantPeriod == "yes") {
-        std::cout << "Enter time period in minutes" << std::endl;
+        TerminalWindow::message("Enter time period in minutes");
         std::string periodInput;
         std::getline(std::cin, periodInput);
         try {
@@ -319,10 +320,10 @@ void MerkelMain::printVolumeGraph() {
                 throw std::exception();
             }
         } catch (const std::exception& e) {
-            std::cout << "Invalid input. Defaulting to 15 minutes." << std::endl;
+            TerminalWindow::error("Invalid input. Defaulting to 15 minutes.");
         }
     } else if (wantPeriod != "no") {
-        std::cout << "Invalid input. Defaulting to 15 minutes." << std::endl;
+        TerminalWindow::error("Invalid input. Defaulting to 15 minutes.");
     }
 
     VolumeGraph{orderBook, product, period}.plot();
