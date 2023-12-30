@@ -37,7 +37,7 @@ std::vector<Candlestick> CandlestickGraph::getCandlesticks(OrderBook orderBook, 
             currentTime = order.timestamp;
             nextTimeCounter += 1;
         } else {
-            Candlestick candlestick = Candlestick::processCandlestick(currentPeriodOrders, open);
+            Candlestick candlestick{currentPeriodOrders, open};
             open = candlestick.close;
             candlesticks.push_back(candlestick);
 
@@ -49,7 +49,7 @@ std::vector<Candlestick> CandlestickGraph::getCandlesticks(OrderBook orderBook, 
     }
 
     if (currentPeriodOrders.size() > 0) {
-        Candlestick candlestick = Candlestick::processCandlestick(currentPeriodOrders, open);
+        Candlestick candlestick{currentPeriodOrders, open};
         candlesticks.push_back(candlestick);
     }
 

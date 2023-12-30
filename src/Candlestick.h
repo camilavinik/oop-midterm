@@ -12,11 +12,5 @@ class Candlestick
         double low;
         double close;
 
-        Candlestick( std::string date,
-                     double open,
-                     double close,
-                     double high,
-                     double low);
-                     
-        static Candlestick processCandlestick(std::vector<OrderBookEntry>& entries, double open);
+        Candlestick(std::vector<OrderBookEntry>& entries, double& open);   
 };

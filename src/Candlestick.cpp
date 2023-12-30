@@ -1,23 +1,9 @@
 #include "Candlestick.h"
 
-Candlestick::Candlestick( std::string _date,
-                          double _open,
-                          double _close,
-                          double _high,
-                          double _low) 
-: date(_date),
-  open(_open),
-  close(_close),
-  high(_high),
-  low(_low)
+Candlestick::Candlestick(std::vector<OrderBookEntry>& entries, double& openValue)
 {
-
-}
-
-Candlestick Candlestick::processCandlestick(std::vector<OrderBookEntry>& entries, double open)
-{
-    double high = entries[0].price; //es solo esto??
-    double low = entries[0].price;
+    double highValue = entries[0].price;
+    double lowValue = entries[0].price;
     double totalAmount = 0;
     double totalValue = 0;
 
@@ -25,18 +11,20 @@ Candlestick Candlestick::processCandlestick(std::vector<OrderBookEntry>& entries
         totalAmount += entry.amount;
         totalValue += entry.price * entry.amount;
 
-        if (entry.price > high) {
-            high = entry.price;
+        if (entry.price > highValue) {
+            highValue = entry.price;
         }
 
-        if (entry.price < low) {
-            low = entry.price;
+        if (entry.price < lowValue) {
+            lowValue = entry.price;
         }
     }
 
-    double close = totalValue / totalAmount;
+    double closeValue = totalValue / totalAmount;
 
-    Candlestick candlestick{entries[0].timestamp, open, close, high, low};
-
-    return candlestick;
+    date = entries[0].timestamp;
+    open = openValue;
+    high = highValue;
+    low = lowValue;
+    close = closeValue;
 }
