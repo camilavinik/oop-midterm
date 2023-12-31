@@ -6,12 +6,12 @@
 class CandlestickGraph
 {
     public:
-        std::vector<Candlestick> candlesticks;
         CandlestickGraph(OrderBook &orderBook, OrderBookType &_type, std::string &_product, int &_period, bool &showFirst);
         /** Plot Candlestick Graph on console. */
         void plot();
 
     private:
+        std::vector<Candlestick> candlesticks;
         OrderBookType type;
         std::string product;
         int period;
