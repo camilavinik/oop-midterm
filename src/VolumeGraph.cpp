@@ -2,6 +2,7 @@
 #include "TerminalWindow.h"
 #include <iostream>
 #include <iomanip>
+#include <set>
 
 // terminal output colors
 #define RESET   "\033[0m"
@@ -167,8 +168,13 @@ std::vector<double> VolumeGraph::getOrderedValues() {
         values.push_back(volume.bid);
     }
 
+    // use set to automatically remove duplicates and asign values to that set
+    std::set<double> uniqueValues(values.begin(), values.end());
+    values.assign(uniqueValues.begin(), uniqueValues.end());
+
     // sort values in descending order
     std::sort(values.begin(), values.end(), std::greater<double>());
+
     return values;
 }
 
