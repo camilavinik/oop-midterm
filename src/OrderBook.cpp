@@ -39,9 +39,9 @@ std::vector<OrderBookEntry> OrderBook::getOrders(OrderBookType type,
     std::vector<OrderBookEntry> orders_sub;
     for (OrderBookEntry& e : orders)
     {
-        if (e.orderType == type && 
+        if ((type == OrderBookType::unknown || e.orderType == type) && 
             e.product == product && 
-            e.timestamp == timestamp )
+            (timestamp == "" || e.timestamp == timestamp))
             {
                 orders_sub.push_back(e);
             }

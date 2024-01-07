@@ -22,11 +22,13 @@ class MerkelMain
         void gotoNextTimeframe();
         int getUserOption();
         void processUserOption(int userOption);
+        void printCandlesticks();
+        void printVolumeGraph();
 
         std::string currentTime;
 
-//        OrderBook orderBook{"20200317.csv"};
-	OrderBook orderBook{"20200601.csv"};
+        // OrderBook orderBook{"20200317.csv"};
+	    OrderBook orderBook{"20200601.csv"};
         Wallet wallet;
 
 };
